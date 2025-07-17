@@ -21,15 +21,17 @@
       overflow: hidden;
     }
     h2 {
-      font-size: 5vh;
-      color: #ff891b;
-      margin-top: 2vh;
+      font-size: 10vh;
+      color: #d43c0e;
+      margin-top: 3vh;
+      font-family: 'Roundest Serial', 'Garamond', serif;
     }
     
     h1 {
-      font-size: 10vh;
+      font-size: 6vh;
       color: #e5ff00;
-      margin-top: -4vh;
+      margin-top: -10vh;
+      margin-bottom: 5vh;
     }
 
     .slideshow-container {
@@ -51,7 +53,7 @@
       min-width: 100%;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr 1fr;
+      grid-template-rows: 1fr;
       gap: 2vw;
       padding: 2vw;
       padding-bottom: 0vh;
@@ -64,11 +66,12 @@
       padding: 0rem;
       position: relative;
       box-shadow: 0 0px 16px 10px rgb(17, 17, 17);
-      max-height: 40vh;
+      max-height: 70vh;
       transition: transform 0.3s;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-start;
+      align-items: center;
       overflow: hidden;
     }
 
@@ -102,7 +105,16 @@
       text-align: right;
       display: block;
     }
-
+    .logo-corner {
+      position: fixed;
+      top: 1vh;
+      left: 1vw;
+      z-index: 200;
+      width: 30vh;
+      height: auto;
+      pointer-events: none;
+      user-select: none;
+    }
     .sale {
       color: #ffffff; /* Fallback text color */
       background: linear-gradient(75deg, #ff0000 48%, #fff06c 49%, #fff06c 50%, #ff0000 51%, #ff0000 80%);
@@ -194,8 +206,9 @@
   </style>
 </head>
 <body>
-  <h2>LA FRESCO MERCADO</h2>
-  <h1>Especiales de Hoy</h1>
+  <img src="https://i.ibb.co/nqmRcSD4/Ogn-Fresco1.png" alt="Logo" class="logo-corner">
+  <h2>CARNICERIA</h2>
+  <h1>ESPECIALES DE HOY</h1>
   <div class="slideshow-container">
     <div class="slides" id="slides"></div>
   </div>
@@ -233,10 +246,11 @@
       const json = JSON.parse(text.substr(47).slice(0, -2));
       const rows = json.table.rows.map(r => r.c.map(c => c ? c.v : ""));
 
-      // Chunk into groups of 4 items per slide
+
+      // Chunk into groups of 2 items per slide
       const chunks = [];
-      for (let i = 0; i < rows.length; i += 4) {
-        chunks.push(rows.slice(i, i + 4));
+      for (let i = 0; i < rows.length; i += 2) {
+        chunks.push(rows.slice(i, i + 2));
       }
 
       // Clone the first page to the end
@@ -249,6 +263,7 @@
       chunks.forEach(group => {
         const slide = document.createElement("div");
         slide.className = "slide";
+
 
 group.forEach(([item, price, salePrice, imageUrl, onSale]) => {
   const div = document.createElement("div");
@@ -274,25 +289,15 @@ group.forEach(([item, price, salePrice, imageUrl, onSale]) => {
   }
 
   div.innerHTML = `
-    <div style="display: flex; height: 100%;">
+    <div style="width: 100%; display: flex; flex-direction: column; align-items: center; height: 100%;">
       ${
         validImage
-          ? `<div style="flex: 1; position: relative; max-width: 50%;">
-              <img src="${imageUrl}" alt="${item}" style="
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                aspect-ratio: 1 / 1;
-                border-top-left-radius: 1.5rem;
-                border-bottom-left-radius: 1.5rem;
-              ">
-            </div>
-            <div style="flex: 1; padding: 5vh 1.8vh 1vh 1.8vh; display: flex; flex-direction: column; justify-content: flex-start; text-align: left;">`
-          : `<div style="flex: 1; padding: 5vh 1.8vh 1vh 3vh; display: flex; flex-direction: column; justify-content: flex-start; text-align: left;">`
+          ? `<div style=\"width: 100%; height: 50vh; position: relative;\">
+                <img src=\"${imageUrl}\" alt=\"${item}\" style=\"width: 100%; height: 100%; object-fit: cover; border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem;\">
+             </div>`
+          : ''
       }
+      <div style="width: 100%; padding: 2vh 2vw 1vh 2vw; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; text-align: left; flex: 1;">
         <div class="item-name" style="margin-top: 0.5vh;">${item}</div>
         <div class="price">
           ${
@@ -313,7 +318,7 @@ group.forEach(([item, price, salePrice, imageUrl, onSale]) => {
 
 
         // Fill empty cells to maintain layout
-        while (slide.childNodes.length < 4) {
+        while (slide.childNodes.length < 2) {
           const empty = document.createElement("div");
           empty.className = "item";
           empty.style.visibility = "hidden";
